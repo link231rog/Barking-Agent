@@ -115,6 +115,7 @@ codex plugin add coral@coral-marketplace
 | 任务 | 领域 | 说明 |
 |------|------|------|
 | **circle_packing** | 优化 | 把 26 个圆塞进单位正方形，最大化半径总和 |
+| **barking_dog_jamming** | 具身智能/运筹 | 国赛 B 题机器狗无线电测向与多目标干扰源歼灭调度自主演化 |
 | **erdos** | 数学 | 求解数学猜想 |
 | **kernel_builder** | 系统 | VLIW SIMD kernel 优化 |
 | **kernel_engineering** | 系统 | GPU kernel 优化 |

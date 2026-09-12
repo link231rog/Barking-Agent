@@ -108,6 +108,7 @@ Ready-to-run task configurations in `examples/`:
 | Task                       | Domain       | Description                                                 |
 | -------------------------- | ------------ | ----------------------------------------------------------- |
 | **circle_packing**         | Optimization | Pack 26 circles into a unit square to maximize sum of radii |
+| **barking_dog_jamming**    | Robotics/OR  | Autonomous robot dog radio DF & jammer neutralization (CUMCM 2026 Problem B) |
 | **erdos**                  | Mathematics  | Solve a math conjecture                                     |
 | **kernel_builder**         | Systems      | VLIW SIMD kernel optimization                               |
 | **kernel_engineering**     | Systems      | GPU kernel optimization                                     |

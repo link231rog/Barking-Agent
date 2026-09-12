@@ -1,0 +1,13 @@
+# Built-in preset: Barking-Dog autonomous multi-agent co-evolution for CUMCM 2026 Problem B.
+# Reference from a task.yaml with `preset: barking-dog`.
+grader:
+  setup:
+    - "uv pip install -e ./grader"
+
+agents:
+  count: 4
+  runtime: claude_code
+  model: opus
+
+run:
+  session: tmux

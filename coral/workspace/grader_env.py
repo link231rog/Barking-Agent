@@ -80,8 +80,10 @@ def _coral_install_command(origin: dict) -> str:
 
     if origin.get("dir_info", {}).get("editable"):
         # `file:///abs/path` -> `/abs/path`
-        local_path = urlparse(url).path
-        return f"uv pip install -q -e {local_path}"
+        from urllib.parse import unquote
+        import shlex
+        local_path = unquote(urlparse(url).path)
+        return f"uv pip install -q -e {shlex.quote(local_path)}"
 
     if "vcs_info" in origin:
         vcs = origin["vcs_info"].get("vcs")

@@ -1,0 +1,52 @@
+task:
+  name: "Barking-Dog Jammer Neutralization"
+  description: |
+    CUMCM 2026 Problem B: Autonomous Robot Dog Multi-Target Radio Direction Finding & Clearance.
+
+    A robotic quad-legged agent (max speed 5.0 m/s) navigates an unknown hostile arena
+    (radius R = 1800 m) to detect and neutralize N = 10 ~ 16 unknown radio jammers.
+
+    Constraints & Specifications:
+      1. Direction finding: Available across channels 1..20, bearing error uniformly distributed in [-1.0°, +1.0°].
+         Signal saturation blind zone when distance <= 5.0 m.
+      2. Neutralization: Optical acquisition (3.0s) and laser beam clearance (2.0s) strictly within 20.0m kill radius.
+      3. Protocol costs: Channel switching takes 1.0s; radio detection takes 5.0s.
+      4. Objective: 100% complete clearance of all targets, minimizing total mission execution duration,
+         compressing average time per target toward theoretical limit (~200s), reducing inter-seed variance,
+         and suppressing Price of Uncertainty Index (PUI < 0.50).
+
+    Your program file `strategy.py` must define a `run_mission(sim)` function that interacts
+    with the arena simulator protocol and returns a dict with:
+      - 'cleared': int, number of targets neutralized
+      - 'total': int, total ground truth targets
+      - 'time': float, total virtual elapsed duration (seconds)
+      - 'dist': float, total distance traversed (meters)
+      - 'avg_time': float, average virtual time per target
+
+    Consider evolving:
+    - Fisher Information Matrix (FIM) optimal baseline triangulation (orthogonal ~90° intercepts)
+    - Largest Empty Wedge theorem for initial adaptive polar boundary sweep
+    - Target-as-Anchor progression (eliminating fixed outpost sawtooth backtracking)
+    - Dynamic angular corridor gating (45° forward window, [-35°, 0°) rear-close guard)
+    - Spatial sniffing displacement thresholds (850m throttling)
+  tips: |
+    - Eval timeout is 300s.
+    - Clearance rate MUST be 100.0%. Any missing target incurs heavy score penalties.
+    - Evaluator tests across 30 standard contest seeds covering N in [10, 16].
+    - Baseline average clearance time is ~250s/target. PUI < 0.40 earns high bonus.
+    - Score is normalized (0 to 100+); > 80 means competitive, > 100 is state-of-the-art.
+
+preset: barking-dog
+
+grader:
+  entrypoint: "barking_dog_grader.grader:BarkingDogGrader"
+  timeout: 300
+  direction: maximize
+  args:
+    program_file: "strategy.py"
+
+workspace:
+  results_dir: "./results"
+  repo_path: "./examples/barking_dog_jamming/seed"
+  setup:
+    - "uv pip install numpy scipy"
