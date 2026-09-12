@@ -1,180 +1,88 @@
-
 <div align="center">
 
-<img src="assets/logo.png" alt="CORAL logo —— 多 Agent 自主编程基础设施" width="360">
+# Barking-Agent：机器狗无线电测向与干扰源清剿多智能体自进化基准工具箱
 
-# CORAL：由自主编程 Agent 驱动的开源 Autoresearch 框架
+**专为全国大学生数学建模竞赛（CUMCM）2026 年 B 题定制的多智能体协同自进化基准与评测工具，基于 CORAL（COLM 2026, [arXiv:2602.04655](https://arxiv.org/abs/2602.04655)）架构深度改造。**
 
-**一键启动智能体群组，共享知识，无限进化**
-
-<p>
-  <img src="assets/mit_logo.png" alt="MIT" height="50">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="assets/nus.png" alt="NUS" height="50">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="assets/stanford.png" alt="Stanford" height="50">
-</p>
-
-[![Paper](https://img.shields.io/badge/Paper-arXiv%3A2604.01658-B31B1B.svg?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2604.01658v1)
-[![Blog](https://img.shields.io/badge/Blog-CORAL-FF6B6B.svg?logo=hashnode&logoColor=white)](https://coral.compounding-intelligence.ai/blogs/)
-[![Apache 2.0 License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB.svg?logo=python&logoColor=white)](https://python.org)
 
 [English](README.md) | **中文**
 
 </div>
 
-<p align="center">
-<a href="#安装">安装</a> · <a href="#插件在你自己的-agent-里使用-coral">插件</a> · <a href="#支持的-agent">支持的 Agent</a> · <a href="#工作原理">工作原理</a> · <a href="#示例">示例</a> · <a href="https://coral.compounding-intelligence.ai/docs/">文档</a> · <a href="https://arxiv.org/abs/2604.01658v1">论文</a>
-</p>
+---
 
-**CORAL** 是用于构建**自主 AI Agent 组织**的基础设施 —— Agent 持续运行实验、共享知识、不断进化。只需提供代码库和评分脚本，CORAL 负责其余的一切：隔离工作空间、安全评估、持久共享状态、多 Agent 协作。原生集成 Claude Code、OpenCode、Codex、Cursor Agent、Kiro。
+### 项目概述
 
-### 🔥 News
+**Barking-Agent** 为复杂对抗电磁战区（$R=1750\,\text{m}$ 圆形区域）中的机器狗动态机动、纯方位多测站交叉定位（RDF）与就地激光清剿，提供了一套标准化的黑盒评测隔离沙箱、物理竞技场模拟器以及多智能体协同变异演化框架。
 
-- **[2026-07-08]** CORAL 已被 **COLM 2026** 接收！🎉
-- **[2026-06-24]** Docker 会话现在会隔离 agent 与 grader：每个 agent 以非特权用户运行（manager 与 grader 仍为 root），agent 将无法读取 `.coral/private/`（grader 虚拟环境、答案 key）—— 即使通过 Bash 也不行。在宿主机上仍可通过 `agents.isolate_user` 选择启用。
-- **[2026-06-13]** 旧版 `eval/grader.py` grader 自动发现已废弃并移除 —— 改用 `grader.entrypoint` 指向打包的 grader。详见 [自定义 Grader 文档](https://coral.compounding-intelligence.ai/docs/guides/custom-grader)。
-- **[2026-04-24]** 新增 Rubric 评审 —— 两个开箱即用的 LLM 评审 grader 包，专为开放式任务（报告、备忘、法律分析）设计。详见 [Rubric Judges 文档](https://coral.compounding-intelligence.ai/docs/guides/rubric-judge)。
-- **[2026-04-03]** 我们的论文 "CORAL: Towards Autonomous Multi-Agent Evolution for Open-Ended Discovery" 现已发布！请查看 [Arxiv](https://arxiv.org/abs/2604.01658v1)。
-- **[2026-03-18]** CORAL 正式发布！点击查看 [Blog](https://coral.compounding-intelligence.ai/blogs/evolve-like-coral/)。
+### 核心特性
 
-![CORAL 多 Agent 自主编程演示 —— 多个编程 Agent 在独立 git worktree 中并行运行,通过共享状态目录交换知识](assets/demo.gif)
+1. **打包化评测套件架构 (`barking-dog-grader`)**：
+   - 位于 [`examples/barking_dog_jamming/grader/`](examples/barking_dog_jamming/grader/)。
+   - 内置高保真物理竞技场模拟器，自动化评测横跨 30 组国赛随机场景（每个场景 $N \in [10, 16]$ 个目标，全谱系共 395 个目标），严格施加测向角误差、激光视场与尝试次数硬约束。
+2. **多目标自进化适应度函数**：
+   - 刚性要求 100% 全歼率，对单目标平均耗时 $\bar{T}$、探索不确定性代价指数 $\text{PUI}$ 及方差控制提供平滑收敛引导。
+3. **多智能体共享持久记忆库（Shared Memory Hub）**：
+   - `attempts/`：全代际时空轨迹与评分档案。
+   - `notes/`：结构化反思与负信息（Negative Information）剪枝笔记。
+   - `skills/`：通过单元测试的可复用 Python 战术算子库（如目标即前哨跳跃、加权 LSQ 闭式三角网等）。
+4. **Web UI 可视化看板**：
+   - [`web/`](web/)：基于 React + TypeScript 的轻量化前端，支持多代际得分收敛曲线、智能体知识图谱与实时日志回放。
 
-### 安装
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Human-Agent-Society/CORAL/main/install.sh | sh
-```
-
-通过 `uv tool install` 全局安装**最新版 `coral`**。如确需指定版本，设置 `CORAL_VERSION=<tag>`。手动安装、开发模式、前置依赖等详见[安装文档](https://coral.compounding-intelligence.ai/docs/getting-started/installation)。
+### 快速开始与基准自检
 
 ```bash
-coral init my-task                       # 生成任务模板
-cd my-task && coral start -c task.yaml   # 启动 Agent
+# 1. 初始化虚拟环境并安装
+uv venv
+source .venv/bin/activate
+uv pip install -e .
+
+# 2. 对基线初始种子执行闭环校验
+coral validate examples/barking_dog_jamming
 ```
 
-### 插件：在你自己的 Agent 里使用 CORAL
+### 校验输出基准（Validation Output）
 
-想在**你自己的** Claude Code 或 Codex 里编写、运行 CORAL 任务，又不想记 CLI？安装 CORAL 插件——一个以 skill 为主的包（不含 MCP），教会 Agent 整套流程（`coral setup` → `init`/`validate` → `start`/`status`/`log`），并在会话开始时检查 `coral` 是否已安装。
-
-**Claude Code：**
-
-```
-/plugin marketplace add Human-Agent-Society/CORAL
-/plugin install coral@coral-marketplace
+```text
+==================================================
+Score: 81.7202
+  eval: Clearance: 395/395 (100.0%) | Avg Time: 283.37s/tgt | PUI: 0.580 | StdDev: 66.19s | Dist: 14401.6m | Score: 81.7202
+==================================================
 ```
 
-**Codex**（v0.117.0+）：
+### 目录架构
 
 ```
-codex plugin marketplace add Human-Agent-Society/CORAL
-codex plugin add coral@coral-marketplace
+Barking-Agent/
+├── coral/                  # Python 协同与评测核心引擎
+│   ├── cli/                # 命令行入口 (validate, start, status, eval)
+│   ├── grader/             # 评测隔离沙箱与 TaskGrader 规范
+│   ├── hub/                # 共享记忆中心 (attempts, notes, skills)
+│   ├── web/                # Web 看板后端 API 服务
+│   └── workspace/          # 工作空间隔离与虚拟环境管理
+├── examples/
+│   └── barking_dog_jamming/ # B 题专属任务配置、评测器与基线策略种子
+└── web/                    # React + TypeScript 看板前端工程
 ```
 
-两者都从本仓库的 marketplace 清单拉取；插件位于 [`plugin/`](plugin/)。
+### 引用 (Citation)
 
-**快速上手——让 CORAL 优化你已有的代码。** 装好后，打开你想优化的代码仓库，直接说一句：
-
-```
-用 coral 优化这个 —— 在不改变输出的前提下让 saga/decode.py 里的 sample() 更快
-```
-
-插件会自动开一个被 gitignore 的 `.coral_workspace/`，把你的代码放进 `seed/`，按你的指标写好 grader，并反复跑 `coral validate` 直到任务可启动——最后把 `coral start` 命令交给你。在 Claude Code 上，`coral-task-author` 子 agent 会自主完成整个搭建过程（另有 `coral-run-doctor` 负责诊断卡住的 run）；在其他 harness 上，打包的 skill 会带你走同样的流程。
-
-包含的 skill：`coral-quickstart`（安装 → setup → `.coral_workspace/`）、`setting-up-coral`（运行时绑定）、`creating-a-coral-task`（编写 grader）、`running-coral-experiments`（运维一个 run）。子 agent、skill 目录手动安装方式及其他 harness，见[插件指南](https://coral.compounding-intelligence.ai/docs/guides/plugin)或 [`plugin/README.md`](plugin/README.md)。
-
-### 支持的 Agent
-
-| Agent | `agents.runtime` |
-|-------|------------------|
-| [Claude Code](https://github.com/anthropics/claude-code) —— 默认 | `claude_code` |
-| [Codex](https://github.com/openai/codex) | `codex` |
-| [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) | `dsh` |
-| [Cursor Agent](https://cursor.com/docs/cli/overview) | `cursor` |
-| [Kiro](https://kiro.dev) | `kiro` |
-| [OpenCode](https://github.com/opencode-ai/opencode) | `opencode` |
-| [Pi](https://pi.dev) | `pi` |
-
-每个 Agent 需自行安装并完成认证。各运行时的详细配置（含[ LiteLLM Gateway](https://coral.compounding-intelligence.ai/docs/guides/gateway) 自定义模型代理）见 [Agent 运行时文档](https://coral.compounding-intelligence.ai/docs/guides/agent-runtimes)。
-
-### 工作原理
-
-<p align="center">
-  <img src="assets/coral_diagram_trans.jpg" alt="CORAL 架构图:多个编程 Agent 运行在隔离的 git worktree 中,通过 .coral/public/ 共享状态,由 grader 守护进程评分" width="800">
-</p>
-
-每个 Agent 跑在自己的 git worktree 里。共享状态（历史记录、笔记、技能）放在 `.coral/public/`，软链到所有 worktree —— Agent 实时看到彼此的工作。Grader 守护进程为每次提交打分。后台管理器通过心跳机制打断 Agent 并注入指令（`reflect`、`consolidate`、`pivot`）。
-
-深入阅读：[核心概念](https://coral.compounding-intelligence.ai/docs/concepts) · [多 Agent 运行](https://coral.compounding-intelligence.ai/docs/guides/multi-agent) · [评估循环](https://coral.compounding-intelligence.ai/docs/concepts/eval-loop)
-
-### 示例
-
-`examples/` 下有开箱即用的任务配置：
-
-| 任务 | 领域 | 说明 |
-|------|------|------|
-| **circle_packing** | 优化 | 把 26 个圆塞进单位正方形，最大化半径总和 |
-| **barking_dog_jamming** | 具身智能/运筹 | 国赛 B 题机器狗无线电测向与多目标干扰源歼灭调度自主演化 |
-| **erdos** | 数学 | 求解数学猜想 |
-| **kernel_builder** | 系统 | VLIW SIMD kernel 优化 |
-| **kernel_engineering** | 系统 | GPU kernel 优化 |
-| **mnist** | 机器学习 | 手写数字识别 |
-| **spaceship_titanic** | 机器学习 | Kaggle 竞赛 |
-| **stanford_covid_vaccine** | 生物/ML | mRNA 降解预测 |
-
-完整任务清单与详解见[示例文档](https://coral.compounding-intelligence.ai/docs/examples)。
-
-### 开发
-
-```bash
-# 装开发依赖
-uv sync --extra dev
-
-# 跑测试
-uv run pytest tests/ -v
-
-# lint + 格式化
-uv run ruff check .
-uv run ruff format .
-```
-
-> [!IMPORTANT]
-> **Docker 要求：**部分内置 grader（例如 SWE-bench、terminal-bench）使用 [Harbor](https://github.com/corca-ai/harbor) 在 Docker 容器中执行评估。此时 CORAL 本身**不能**运行在 Docker 中，因为不支持 Docker-in-Docker（DinD）。请直接在宿主机上运行 CORAL。
-
-### 参与贡献
-
-欢迎社区贡献 —— bug 报告、`examples/` 下的新任务、新的 agent runtime、文档改进，都很欢迎。先看这里：
-
-- [CONTRIBUTING.md](CONTRIBUTING.md) —— 开发环境、分支与 commit 规范、PR 流程、测试与 lint 命令。
-- [AGENTS.md](AGENTS.md) —— AI 辅助贡献的规则（CORAL 本身就是 agent 基础设施，所以我们对 agent 写的 PR 有一些具体要求）。
-
-想深入了解代码结构，可以读 [CLAUDE.md](CLAUDE.md) 里的架构说明 —— 覆盖 eval loop、`.coral/{public,private}/` 划分、grader daemon、runtime registry。
-
-本项目在 Apache 2.0 [LICENSE](LICENSE) 许可下开源。
-
-### 引用
-
-⭐ 如果觉得 CORAL 对有帮助的话，欢迎给我们的 GitHub Repo 点个 Star。也可以考虑引用我们 (请使用下方的官方 BibTeX，而不要使用 Google Scholar 自动生成的引用，因为后者可能会截断作者列表)：
+如果您在学术论文中使用了本基准或底层的 CORAL 架构，请引用：
 
 ```bibtex
-@article{qu2026coral,
+@inproceedings{qu2026coral,
   title={CORAL: Towards Autonomous Multi-Agent Evolution for Open-Ended Discovery},
   author={Qu, Ao and Zheng, Han and Zhou, Zijian and Yan, Yihao and Tang, Yihong and Ong, Shao Yong and Hong, Fenglu and Zhou, Kaichen and Jiang, Chonghe and Kong, Minwei and Zhu, Jiacheng and Jiang, Xuan and Li, Sirui and Wu, Cathy and Low, Bryan Kian Hsiang and Zhao, Jinhua and Liang, Paul Pu},
-  journal={arXiv preprint arXiv:2604.01658},
+  booktitle={Conference on Language Modeling (COLM)},
   year={2026}
 }
 ```
 
-## Star History
+### 开源许可证 (License)
 
-<a href="https://www.star-history.com/?repos=Human-Agent-Society%2FCORAL&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Human-Agent-Society/CORAL&type=date&theme=dark&legend=top-left&sealed_token=_Mr1XWVeoHdhN5RB0i4Fz-C0qC_ci1us7BViejAd73QFLQB7w_FW2o-3uWeM_nqAmLucjkLC8pNTEHRR1MVZ7LKGHYmhes0XBWUMTHuAWyJUJeYjB5XCNw" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Human-Agent-Society/CORAL&type=date&legend=top-left&sealed_token=_Mr1XWVeoHdhN5RB0i4Fz-C0qC_ci1us7BViejAd73QFLQB7w_FW2o-3uWeM_nqAmLucjkLC8pNTEHRR1MVZ7LKGHYmhes0XBWUMTHuAWyJUJeYjB5XCNw" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Human-Agent-Society/CORAL&type=date&legend=top-left&sealed_token=_Mr1XWVeoHdhN5RB0i4Fz-C0qC_ci1us7BViejAd73QFLQB7w_FW2o-3uWeM_nqAmLucjkLC8pNTEHRR1MVZ7LKGHYmhes0XBWUMTHuAWyJUJeYjB5XCNw" />
- </picture>
-</a>
+本项目采用 Apache 2.0 开源许可证。
 
 ### 致谢
 

@@ -1,155 +1,75 @@
-
 <div align="center">
 
-<img src="assets/logo.png" alt="CORAL logo — multi-agent autonomous coding infrastructure" width="360">
+# Barking-Agent: Autonomous Robot Dog Radio Direction Finding & Jamming Countermeasures
 
-# CORAL: Open-Source Autoresearch Powered by Autonomous Coding Agents
+**Multi-agent self-evolution benchmark and toolkit for CUMCM 2026 Problem B, adapted from CORAL (COLM 2026, [arXiv:2602.04655](https://arxiv.org/abs/2602.04655)).**
 
-**Robust, lightweight infrastructure for multi-agent self-evolution, built for autoresearch.**
-
-[![Paper](https://img.shields.io/badge/Paper-arXiv%3A2604.01658-B31B1B.svg?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2604.01658v1)
-[![Blog](https://img.shields.io/badge/Blog-CORAL-FF6B6B.svg?logo=hashnode&logoColor=white)](https://coral.compounding-intelligence.ai/blogs/)
-[![Apache 2.0 License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB.svg?logo=python&logoColor=white)](https://python.org)
 
 **English** | [中文](README_CN.md)
 
 </div>
 
-<p align="center">
-<a href="#installation">Installation</a> · <a href="#plugin-drive-coral-from-your-own-agent">Plugin</a> · <a href="#supported-agents">Supported Agents</a> · <a href="#how-it-works">How It Works</a> · <a href="#examples">Examples</a> · <a href="https://coral.compounding-intelligence.ai/docs/">Docs</a> · <a href="https://arxiv.org/abs/2604.01658v1">Paper</a>
-</p>
+---
 
-**CORAL** is infrastructure for **autonomous AI agent organizations** that run experiments, share knowledge, and continuously improve solutions. Give it a codebase and a grader, and CORAL handles the rest: isolated workspaces, safe evaluation, persistent shared state, and multi-agent collaboration. Natively integrated with Claude Code, OpenCode, Codex, Cursor Agent, and Kiro.
+### Overview
 
-### 🔥 News
+**Barking-Agent** provides a standardized evaluation environment, simulation arena, and co-evolutionary agent coordination framework for autonomous robot dog navigation, bearing-only radio direction finding (RDF), and in-situ jammer neutralization.
 
-- **[2026-07-08]** **CORAL** has been accepted to **COLM 2026**! 🎉
-- **[2026-06-24]** The Docker session now isolates the agent from the grader: each agent runs as an unprivileged user (manager and grader stay root), so agents can no longer read `.coral/private/` (grader venv, answer keys) — not even via Bash. On the host this stays opt-in via `agents.isolate_user`.
-- **[2026-06-13]** Legacy `eval/grader.py` grader auto-discovery is deprecated and removed — wire graders via `grader.entrypoint` pointing at a packaged grader. See the [custom grader guide](https://coral.compounding-intelligence.ai/docs/guides/custom-grader).
-- **[2026-06-06]** CORAL v0.6.0 adds multi-island runs: partition agents into isolated islands with scoped attempts, notes, skills, heartbeat state, and migration between islands for broader exploration.
-- **[2026-04-24]** Rubric judges — two reusable LLM-judge grader packages for open-ended tasks (reports, memos, legal analysis). See the [Rubric Judges guide](https://coral.compounding-intelligence.ai/docs/guides/rubric-judge).
-- **[2026-04-03]** Our paper, "CORAL: Towards Autonomous Multi-Agent Evolution for Open-Ended Discovery," is now out! Check it out on [Arxiv](https://arxiv.org/abs/2604.01658v1).
-- **[2026-03-18]** CORAL is released! Check out our [blog post](https://coral.compounding-intelligence.ai/blogs/evolve-like-coral/).
+### Key Features
 
-![CORAL demo — autonomous AI coding agents running in parallel git worktrees, sharing knowledge through a common state directory](assets/demo.gif)
+1. **Packaged Grader Architecture (`barking-dog-grader`)**:
+   - Packaged inside [`examples/barking_dog_jamming/grader/`](examples/barking_dog_jamming/grader/).
+   - Embedded full physics simulation arena evaluating 30 contest seeds ($N \in [10, 16]$, total 395 targets) under bearing error, laser field-of-view, and strict attempt limits.
+2. **Standardized Objective Function**:
+   - Evaluates clearance rate (must achieve 100%), average neutralization time $\bar{T}$, path uncertainty index $\text{PUI}$, and variance reduction penalty.
+3. **Multi-Agent Shared Memory Hub**:
+   - `attempts/`: Stores chronological trajectory logs and scores across iterations.
+   - `notes/`: Structured reflections and negative information pruning guidelines.
+   - `skills/`: Extracted modular Python tactics (target-as-anchor leapfrogging, LSQ triangulation, fallback policies).
+4. **Web UI Dashboard**:
+   - [`web/`](web/): React + TypeScript dashboard for visualizing multi-agent generation progress, score convergence, and knowledge graph.
 
-### Installation
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Human-Agent-Society/CORAL/main/install.sh | sh
-```
-
-Installs the **latest `coral` release** globally via `uv tool install`. Pin a specific release with `CORAL_VERSION=<tag>` if you need to. See [Installation docs](https://coral.compounding-intelligence.ai/docs/getting-started/installation) for manual install, dev setup, and prerequisites.
+### Quickstart & Validation
 
 ```bash
-coral init my-task                       # scaffold a task
-cd my-task && coral start -c task.yaml   # launch agents
+# 1. Setup environment
+uv venv
+source .venv/bin/activate
+uv pip install -e .
+
+# 2. Validate task grader on initial seed
+coral validate examples/barking_dog_jamming
 ```
 
-### Plugin: drive CORAL from your own agent
+### Validation Baseline Output
 
-Prefer to author and run CORAL tasks from inside **your own** Claude Code or Codex without memorizing the CLI? Install the CORAL plugin — a skills-first bundle (no MCP) that teaches the workflows (`coral setup` → `init`/`validate` → `start`/`status`/`log`) and checks `coral` is installed on session start.
-
-**Claude Code:**
-
-```
-/plugin marketplace add Human-Agent-Society/CORAL
-/plugin install coral@coral-marketplace
+```text
+==================================================
+Score: 81.7202
+  eval: Clearance: 395/395 (100.0%) | Avg Time: 283.37s/tgt | PUI: 0.580 | StdDev: 66.19s | Dist: 14401.6m | Score: 81.7202
+==================================================
 ```
 
-**Codex** (v0.117.0+):
+### Architecture
 
 ```
-codex plugin marketplace add Human-Agent-Society/CORAL
-codex plugin add coral@coral-marketplace
+Barking-Agent/
+├── coral/                  # Core Python orchestration engine
+│   ├── cli/                # CLI interface (validate, start, status, eval)
+│   ├── grader/             # Subprocess sandbox and TaskGrader protocols
+│   ├── hub/                # Shared memory (attempts, notes, skills)
+│   ├── web/                # Web dashboard backend API
+│   └── workspace/          # Environment isolation and grader venv
+├── examples/
+│   └── barking_dog_jamming/ # Problem B task definition, grader, and initial strategy seed
+└── web/                    # React + TypeScript dashboard frontend
 ```
-
-Both pull from this repo's marketplace manifests; the plugin lives under [`plugin/`](plugin/).
-
-**Quickstart — point CORAL at code you already have.** Once installed, open the repo whose code you want to optimize and just ask:
-
-```
-use coral to optimize this — make sample() in saga/decode.py faster without changing its output
-```
-
-The plugin scaffolds a gitignored `.coral_workspace/`, drops your code into a `seed/`, writes a grader for your metric, and loops `coral validate` until the task is launch-ready — then hands you the `coral start` command. On Claude Code a `coral-task-author` subagent does the whole grind autonomously (and a `coral-run-doctor` triages a stuck run); on any harness the bundled skills walk the same path.
-
-Skills: `coral-quickstart` (install → setup → `.coral_workspace/`), `setting-up-coral` (runtime bindings), `creating-a-coral-task` (grader authoring), `running-coral-experiments` (operate a run). See the [Harness Plugin guide](https://coral.compounding-intelligence.ai/docs/guides/plugin) or [`plugin/README.md`](plugin/README.md) for agents, the skills-dir alternative, and other harnesses.
-
-### Supported Agents
-
-| Agent | `agents.runtime` |
-|-------|------------------|
-| [Claude Code](https://github.com/anthropics/claude-code) — default | `claude_code` |
-| [Codex](https://github.com/openai/codex) | `codex` |
-| [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) | `dsh` |
-| [Cursor Agent](https://cursor.com/docs/cli/overview) | `cursor` |
-| [Kiro](https://kiro.dev) | `kiro` |
-| [OpenCode](https://github.com/opencode-ai/opencode) | `opencode` |
-| [Pi](https://pi.dev) | `pi` |
-
-Each agent must be installed and authenticated separately. Per-runtime config — including the [LiteLLM gateway](https://coral.compounding-intelligence.ai/docs/guides/gateway) for custom models — is documented at [Agent Runtimes](https://coral.compounding-intelligence.ai/docs/guides/agent-runtimes).
-
-### How It Works
-
-<p align="center">
-  <img src="assets/coral_diagram_trans.jpg" alt="CORAL architecture diagram: multiple coding agents run in isolated git worktrees, share state via .coral/public/, and are scored by a grader daemon" width="800">
-</p>
-
-Each agent runs in its own git worktree. Shared state (attempts, notes, skills) lives in `.coral/public/` and is symlinked into every worktree — agents see each other's work in real time. A grader daemon scores every commit. The manager interrupts agents with heartbeat prompts (`reflect`, `consolidate`, `pivot`).
-
-Deeper dive: [Concepts](https://coral.compounding-intelligence.ai/docs/concepts) · [Multi-agent runs](https://coral.compounding-intelligence.ai/docs/guides/multi-agent) · [Eval loop](https://coral.compounding-intelligence.ai/docs/concepts/eval-loop)
-
-### Examples
-
-Ready-to-run task configurations in `examples/`:
-
-| Task                       | Domain       | Description                                                 |
-| -------------------------- | ------------ | ----------------------------------------------------------- |
-| **circle_packing**         | Optimization | Pack 26 circles into a unit square to maximize sum of radii |
-| **barking_dog_jamming**    | Robotics/OR  | Autonomous robot dog radio DF & jammer neutralization (CUMCM 2026 Problem B) |
-| **erdos**                  | Mathematics  | Solve a math conjecture                                     |
-| **kernel_builder**         | Systems      | VLIW SIMD kernel optimization                               |
-| **kernel_engineering**     | Systems      | GPU kernel optimization                                     |
-| **mnist**                  | ML           | Handwritten digit classification                            |
-| **spaceship_titanic**      | ML           | Kaggle competition                                          |
-| **stanford_covid_vaccine** | Bio/ML       | mRNA degradation prediction                                 |
-
-Full catalogue and walkthroughs at [Examples docs](https://coral.compounding-intelligence.ai/docs/examples).
-
-### Development
-
-```bash
-# Install dev dependencies
-uv sync --extra dev
-
-# Run tests
-uv run pytest tests/ -v
-
-# Lint & format
-uv run ruff check .
-uv run ruff format .
-```
-
-> [!IMPORTANT]
-> **Docker requirement:** Some built-in graders (e.g. SWE-bench, terminal-bench) use [Harbor](https://github.com/corca-ai/harbor) to run evaluations inside Docker containers. CORAL itself must **not** run inside Docker in this case, as Docker-in-Docker (DinD) is not supported. Run CORAL directly on the host machine.
-
-### Contributing
-
-Contributions are welcome — bug reports, new tasks under `examples/`, new agent runtimes, docs, the lot. Start here:
-
-- [CONTRIBUTING.md](CONTRIBUTING.md) — dev setup, branch & commit conventions, PR workflow, test/lint commands.
-- [AGENTS.md](AGENTS.md) — rules for AI-assisted contributions (CORAL is itself agent infrastructure, so we expect agent-authored PRs and have a few specific asks).
-
-For a deeper dive into the codebase, the architecture notes in [CLAUDE.md](CLAUDE.md) cover the eval loop, `.coral/{public,private}/` split, grader daemon, and runtime registry.
-
-This project is released under the Apache 2.0 [LICENSE](LICENSE).
-
 
 ### Citation
 
-⭐ If you find CORAL useful, please consider giving us a Star and/or [citing it](https://arxiv.org/abs/2604.01658) in your work (Please use the official BibTeX below instead of Google Scholar’s auto-generated citation, which may truncate the author list):
+If you use this benchmark or the underlying CORAL architecture, please cite:
 
 ```bibtex
 @inproceedings{qu2026coral,
@@ -160,21 +80,7 @@ This project is released under the Apache 2.0 [LICENSE](LICENSE).
 }
 ```
 
-### Contact Us
+### License
 
-- For technical questions and feature requests, please use [GitHub Issues](https://github.com/Human-Agent-Society/CORAL/issues).
-- For collaboration and partnerships, please contact [info@compounding-intelligence.ai](mailto:info@compounding-intelligence.ai).
+This project is licensed under the Apache 2.0 License.
 
-<!-- ## Star History
-
-<a href="https://www.star-history.com/?repos=Human-Agent-Society%2FCORAL&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Human-Agent-Society/CORAL&type=date&theme=dark&legend=top-left&sealed_token=_Mr1XWVeoHdhN5RB0i4Fz-C0qC_ci1us7BViejAd73QFLQB7w_FW2o-3uWeM_nqAmLucjkLC8pNTEHRR1MVZ7LKGHYmhes0XBWUMTHuAWyJUJeYjB5XCNw" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Human-Agent-Society/CORAL&type=date&legend=top-left&sealed_token=_Mr1XWVeoHdhN5RB0i4Fz-C0qC_ci1us7BViejAd73QFLQB7w_FW2o-3uWeM_nqAmLucjkLC8pNTEHRR1MVZ7LKGHYmhes0XBWUMTHuAWyJUJeYjB5XCNw" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Human-Agent-Society/CORAL&type=date&legend=top-left&sealed_token=_Mr1XWVeoHdhN5RB0i4Fz-C0qC_ci1us7BViejAd73QFLQB7w_FW2o-3uWeM_nqAmLucjkLC8pNTEHRR1MVZ7LKGHYmhes0XBWUMTHuAWyJUJeYjB5XCNw" />
- </picture>
-</a> -->
-
-### Acknowledgement
-
-We thank the [TNT Accelerator](https://www.tnt.so/) for their generous support of various API credits that have helped during the development of Coral. We would also like to thank many of the inspiring prior works such as [OpenEvolve](https://github.com/algorithmicsuperintelligence/openevolve), [autoresearch](https://github.com/karpathy/autoresearch), [TTT Discover](https://arxiv.org/abs/2601.16175),  etc., that have led to the ideation of Coral.

@@ -1,4 +1,0 @@
-metrics.json
-artifacts.json
-eval.stdout.txt
-eval.stderr.txt

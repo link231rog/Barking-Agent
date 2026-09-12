@@ -31,9 +31,8 @@ Key concepts:
 | `coral/web/` | Starlette web dashboard (`app.py`, `api.py`, `events.py`, `logs.py`, `static/`) |
 | `coral/cli/` | CLI package: `start.py`, `query.py`, `eval.py`, `heartbeat.py`, `agents.py` (user-level bindings), `ui.py`, `author.py`, `validation.py`, `_helpers.py` |
 | `coral/user_agents.py` | User-level agent bindings: load/save `~/.config/coral/agents.yaml`, expanded into concrete agent fields by `config._expand_bindings` |
-| `examples/` | Task configs (circle_packing, swebench-verified, kernel_engineering, mnist, ...) — each is a `task.yaml` + `seed/` + packaged grader (`grader/` referenced by `grader.entrypoint`); hidden data is declared in `grader.private` (copied into `.coral/private/`) and must live **outside** the agent-visible `grader/` package |
-| `plugin/` | Skills-first, multi-harness plugin for driving `coral` from another harness (Superpowers-style: one shared `skills/`, per-harness `.claude-plugin/` + `.codex-plugin/` manifests, per-harness `hooks/` with a SessionStart install check). Per-harness marketplace manifests at the repo root — `.claude-plugin/marketplace.json` (Claude) and `.agents/plugins/marketplace.json` (Codex git-backed, `git-subdir` → `./plugin`) — for `owner/repo` discovery. No MCP. See `plugin/README.md`. |
-| `tests/` | Pytest suite (config, grader, hooks, hub, manager reliability, daemon, workspace, ...) |
+| `examples/` | Task configs (`examples/barking_dog_jamming/` with `task.yaml` + `seed/` + packaged `grader/`) |
+| `web/` | React + TypeScript web dashboard frontend (reference interfaces for evaluation UI) |
 
 ## How It Works
 

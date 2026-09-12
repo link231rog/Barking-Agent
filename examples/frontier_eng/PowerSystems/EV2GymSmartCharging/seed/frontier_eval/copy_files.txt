@@ -1,4 +1,0 @@
-scripts
-verification
-frontier_eval
-references

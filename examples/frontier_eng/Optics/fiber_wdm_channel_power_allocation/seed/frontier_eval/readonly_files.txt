@@ -1,3 +1,0 @@
-frontier_eval
-verification/run_validation.py
-verification/oracle.py
